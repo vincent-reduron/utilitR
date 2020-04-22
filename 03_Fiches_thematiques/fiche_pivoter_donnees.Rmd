@@ -1,0 +1,194 @@
+# Pivoter des données en R
+
+## Tâches concernées et recommandations
+
+Vous souhaitez restructurer vos tables de données depuis R, les pivoter selon une ou plusieurs variables.
+
+::: {.recommandation data-latex=""}
+**Recommandations de l'Insee**
+
+* **Il est recommandé d'utiliser le *package* `tidyr`** pour manipuler vos données. 
+* **Il est également recommandé d'utiliser le *package* `data.table`** qui propose des fonctionnalités similaires, plus adaptées à des données de grande taille.
+:::
+
+<!--commGF : pas sûr que ce soit utile
+
+## Présentation des concepts
+
+Il est communément admis que le "nettoyage" et la préparation des données (*data cleanin*, *data munging*) représente une part importante du travail des professionnels du chiffre. On parle parfois d'un rapport "80/20" : 80% de préparation, 20% d'analyse. Parmi l'ensemble des opérations que ce champ recouvre, la restructuration des données tient une place importante. Les deux principales opérations de restructuration consistent à basculer d'un format dit **long** à un format **large**, ou inversement. On dit alors que l'on **pivote** les données, comme avec les tableaux croisés dynamiques d'`Excel ®`.
+
+On trouve également dans la littérature les termes de *data.wrangling*, *reshaping*, *melt* (faire fondre), *cast* (jeter, lancer), *tidy / molten data*
+
+-->
+
+## Pivoter des données avec `tidyr`.
+
+Avant toute chose, il convient de charger le *package* `tidyr`
+
+```{r, echo = TRUE}
+library(tidyr)
+```
+
+<!--flemme de faire ça aujourd'hui-->
+
+## Pivoter des données avec `data.table`.
+
+### Passer d'un format long vers large (*casting*)
+
+La fonction `dcast` attend plusieurs paramètres :
+
++ `data` : désigne la table que l'on souhaite pivoter
++ `formula` : une formule de type `ligne ~ colonne`
++ `value.var` : la variable qui servira à alimenter le croisement ligne/colonne
++ `fun.aggregate` : (FACULTATIF) la fonction d'agrégation à appliquer sur la `value.var`. Si les variables de `formula` n'identifient pas une valeur unique, la fonction `length` est utilisée par défaut.
+
+Un exemple vaut mieux qu'un long discours :
+
+```{r, echo = TRUE}
+library(data.table)
+knitr::kable(head(warpbreaks))
+```
+
+Dans un premier temps, nous transformons notre table en `data.table` (si ce n'est pas déjà le cas)
+
+```{r, echo = TRUE}
+warpDT <- as.data.table(warpbreaks)
+```
+
+Nous souhaitons donc obtenir une nouvelle table dont les colonnes seront composées des modalités de la variable `wool`, les lignes des modalités de la variable `tension`. Au croisement lignes/colonnes, nous aurons les valeurs de la variable `breaks`.
+
+```{r, echo = TRUE}
+data.table::dcast(data = warpDT,
+									formula = tension ~ wool,
+									value.var = "breaks")
+```
+
+Ici, la fonction `dcast` sans le paramètre `fun.aggregate` renvoie le nombre d'observations par croisement, comme le ferait l'instruction suivante :
+
+```{r, eval=TRUE}
+table(warpDT$tension, warpDT$wool)
+```
+
+Ce comportement est dû au fait qu'**il n'y a pas qu'une seule valeur possible par croisement** lignes/colonnes (il y en a 9)
+
+En revanche, si nous ajoutons le paramètre `fun.aggregate`, le résultat est totalement différent. Nous souhaitons par exemple calculer la médiane des valeurs pour chaque "cellule" de la table.
+
+```{r, eval=TRUE}
+data.table::dcast(data = warpDT,
+									formula = tension ~ wool,
+									value.var = "breaks",
+									fun.aggregate = mean)
+```
+
+::: {.conseil data-latex=""}
+Si l'on souhaite simplement concaténer les données dans une table, sans leur appliquer de traitement, il faut utiliser la fonction `toString`.
+
+```{r, eval=TRUE}
+data.table::dcast(data = warpDT,
+									formula = tension ~ wool,
+									value.var = "breaks",
+									fun.aggregate = toString)
+```
+:::
+
+Il est également possible de calculer plusieurs indicateurs en même temps. Il faut alors préciser les fonctions dans une liste :
+
+```{r, eval=TRUE}
+data.table::dcast(data = warpDT,
+									formula = tension ~ wool,
+									value.var = "breaks",
+									fun.aggregate = list(mean, sum))
+```
+
+<!--
+il est également possible de passer sa propre fonction au paramètre `fun.aggregate` :
+
+TODO : trouver un exemple pertinent de fonction
+
+```{r, eval=TRUE}
+data.table::dcast(data = warpDT,
+									formula = tension ~ wool,
+									value.var = "breaks",
+									fun.aggregate = function(x) sum(x) / 2)
+```
+
+-->
+
+### Large vers long (*melting*)
+
+La "transposition" des données en format long se réalise grâce à la fonction `melt`.
+
+Les paramètres attendus sont :
+
++ `data` : désigne la table que l'on souhaite pivoter ;
++ `id.vars` : un vecteur de variable(s) "identifiante(s)". Ce vecteur peut être composé soit d'entiers pour identifier les colonnes par leur index, soit de caractères pour sélectionner les colonnes par leur nom ;
++ `measure.vars` : la liste des colonnes à combiner ;
++ `variable.name` : nom de la colonne regroupant les `measure.vars` ;
++ `value.name` : nom de la colonne contenant la valeur pour chaque modalité de `variable.name`.
+
+D'autres paramètres permettent de mieux contrôler le comportement de la fonction. Pour cela, consulter l'aide *via* `help(topic = "melt", package = "data.table"`.
+
+Pour illustrer cette fonction, nous utiliserons le jeu de données `VADeaths`, qui présente des taux de mortalités par genre et par type de territoire (rural / urbain). Pour les besoins de l'exemple, nous transformons préalablement ces données en objet de classe `data.table`.
+
+```{r, eval=TRUE}
+VADeathsDT <- as.data.table(VADeaths, keep.rownames = TRUE)
+VADeathsDT
+```
+
+Observons le comportement de la fonction si nous passons seulement le 1er paramètre `data`.
+
+```{r, eval=TRUE}
+data.table::melt(data = VADeathsDT)
+```
+
+Nous pouvons constater que `data.table` a tenté de deviné la plupart des paramètres omis. Une façon plus correcte aurait été de préciser la valeur des paramètres, comme ceci :
+
+```{r, eval=TRUE}
+data.table::melt(data = VADeathsDT,
+								 id.vars = "rn",
+								 measures.vars = c(2:5),
+								 variable.name = "indicateur",
+								 value.name = "valeur")
+```
+
+Il est également possible de restructurer la table à partir d'une expression régulière (#ref vers fiche stringi) sur le nom des colonnes. Nous allons voir comment décomposer la table entre taux de mortalité par type de territoire en colonne (une colonne Rural - hommes et femmes, une colonne Urbain - hommes et femmes) :
+
+```{r, eval=FALSE}
+data.table::melt(data = VADeathsDT,
+								 measure.vars = patterns("^Rural", "^Urban"),
+								 value.name = c("Rural", "Urbain"))
+```
+
+::: {.conseil data-latex=""}
+L'opération de *melting* permet notamment de représenter graphiquement les données (#refGGPLOT2) avec `ggplot2`, qui nécessite ce type de structure de table.
+:::
+
+
+
+## A savoir
+
+Il est possible que vous rencontriez, dans du codes transmis par vos collègues, des fonctions qui réalisent le même type de traitements. Notamment, les fonctions `reshape2::melt` et `reshape2::cast`.
+
+La maintenance de ce `packages` n'étant plus assurée, il est recommandé de ne pas les utiliser dans vos futurs projets.
+
+<!--commGF : pas sur qu'il est judicieux de donner un conseil qui peut causer des pb
+Dans la mesure du possible, il serait souhaitable de les remplacer par celles présentées dans cette fiche (attention toutefois de ne pas briser des chaines de traitement).
+-->
+
+Les fonctions du *package* `tidyr` `pivot_longer` et `pivot_larger` ont récemment (en 2019) remplacé `gather` et `spread`. Il est donc possible de croiser ces termes dans des scripts qui n'auraient pas été mis à jour suite à l'évolution de ce *package*.
+
+<!--
+Le langage SQL permet également de réaliser ces opérations, notamment grâce à l'instruction `GROUP BY`. Enfin, le *package* `rpivotTable` permet de réaliser ce type de traitement de façon interactive en *drag and drop* avec la souris.
+-->
+
+## Pour aller plus loin {#RessourcesPIVOT}
+
+On trouve sur internet beaucoup de ressources au sujet des opérations de restructuration de données :
+
+* la [vignette du *package `tidyr` sur le pivotage des données](https://cran.r-project.org/web/packages/tidyr/vignettes/pivot.html)
+* l'[équivalent pour le *package* `data.table`](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-reshape.html)
+* la [traduction française de la cheatsheet sur `dplyr/tidyr`](https://github.com/rstudio/cheatsheets/raw/master/translations/french/data-wrangling-french.pdf)
+* l'[article d'Hadley Wickham du *Journal of Statistical Sofware* (JSS) sur les données *tidy*](https://www.jstatsoft.org/article/view/v059i10)
+* Stack Overflow
+
+
