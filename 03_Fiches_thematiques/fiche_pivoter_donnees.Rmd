@@ -146,7 +146,7 @@ Nous pouvons constater que `data.table` a tenté de deviné la plupart des param
 ```{r, eval=TRUE}
 data.table::melt(data = VADeathsDT,
 								 id.vars = "rn",
-								 measures.vars = c(2:5),
+								 measure.vars = c(2:5),
 								 variable.name = "indicateur",
 								 value.name = "valeur")
 ```
@@ -205,10 +205,15 @@ VADeathTIB %>%
 
 ```
 
-#### Décomposition d'une variable selon une expression régulière
+#### Exemple plus avancé
 
 ```{r, eval=TRUE}
-# je ne sais pas faire
+VADeathTIB %>%
+	pivot_longer(-rn,
+							 names_to = "indicateur",
+							 values_to = "valeur") %>%
+	separate(indicateur,  c("origine", "genre")) %>%
+	pivot_wider(names_from = origine, values_from = valeur)
 ```
 
 
