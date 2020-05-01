@@ -21,8 +21,13 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 
 -->
 
+Le principe du pivot peut être illustré par les deux transformations suivantes:
+
+![Long to wide](./pics/datatable/longtowide.png) ![Wide to long](./pics/datatable/widetolong.png)
+
+
 ```{r, eval=TRUE}
-library(carpenteR)
+library(doremifasol)
 data("bpe_ens_2018")
 ```
 
