@@ -5,17 +5,16 @@
 Vous souhaitez restructurer vos tables de données depuis R, les pivoter selon une ou plusieurs variables.
 
 ::: {.recommandation data-latex=""}
-**Recommandations de l'Insee**
 
-* **Il est recommandé d'utiliser le *package* `tidyr`** pour manipuler vos données. 
-* **Il est également recommandé d'utiliser le *package* `data.table`** qui propose des fonctionnalités similaires, plus adaptées à des données de grande taille.
+* Pour des tables de données de taille petite et moyenne (inférieure à 1 Go ou moins d'un million d'observations), **il est recommandé d'utiliser les _packages_ `tidyr` et `dplyr`** qui sont présentés en détail dans LA FICHE REFERENCE A COMPLETER;
+* Pour des tables de données de grande taille (plus de 1 Go ou plus d'un million d'observations), **Il est également recommandé d'utiliser le *package* `data.table`** qui est présenté en détail dans la fiche [Manipuler des données avec `data.table`].
 :::
 
 <!--commGF : pas sûr que ce soit utile
 
 ## Présentation des concepts
 
-Il est communément admis que le "nettoyage" et la préparation des données (*data cleanin*, *data munging*) représente une part importante du travail des professionnels du chiffre. On parle parfois d'un rapport "80/20" : 80% de préparation, 20% d'analyse. Parmi l'ensemble des opérations que ce champ recouvre, la restructuration des données tient une place importante. Les deux principales opérations de restructuration consistent à basculer d'un format dit **long** à un format **large**, ou inversement. On dit alors que l'on **pivote** les données, comme avec les tableaux croisés dynamiques d'`Excel ®`.
+Il est communément admis que le "nettoyage" et la préparation des données (*data cleaning*, *data munging*) représente une part importante du travail des professionnels du chiffre. On parle parfois d'un rapport "80/20" : 80% de préparation, 20% d'analyse. Parmi l'ensemble des opérations que ce champ recouvre, la restructuration des données tient une place importante. Les deux principales opérations de restructuration consistent à basculer d'un format dit **long** à un format **large**, ou inversement. On dit alors que l'on **pivote** les données, comme avec les tableaux croisés dynamiques d'`Excel ®`.
 
 On trouve également dans la littérature les termes de *data.wrangling*, *reshaping*, *melt* (faire fondre), *cast* (jeter, lancer), *tidy / molten data*
 
