@@ -21,15 +21,22 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 
 -->
 
-Le principe du pivot peut être illustré par les deux transformations suivantes:
-
-![Long to wide](./pics/datatable/longtowide.png) ![Wide to long](./pics/datatable/widetolong.png)
-
+Cette fiche utilise les données de la BPE, disponibles dans le package `doremifasol`:
 
 ```{r, eval=TRUE}
 library(doremifasol)
 data("bpe_ens_2018")
 ```
+
+
+Le principe du pivot peut être illustré par les deux transformations suivantes:
+
+![Transformation *long to wide*](./pics/datatable/longtowide.png)
+
+* Transformation *wide to long*: 
+
+![Transformation *wide to long*](./pics/datatable/widetolong.png)
+
 
 ## Pivoter des données avec `data.table`.
 
@@ -52,55 +59,64 @@ knitr::kable(head(bpe_ens_2018))
 Dans un premier temps, nous transformons notre table en `data.table` (si ce n'est pas déjà le cas)
 
 ```{r, echo = TRUE}
-# warpDT <- as.data.table(warpbreaks)
-bpe2018_DT <- as.data.table(bpe_ens_2018)
+setDT(bpe_ens_2018)
 # bpe2018_DT[, c("DC", "IRIS") := tstrsplit(DCIRIS, "_", fixed=TRUE)]
 ```
 
-Nous souhaitons donc obtenir une nouvelle table dont les colonnes seront composées des modalités de la variable `wool`, les lignes des modalités de la variable `tension`. Au croisement lignes/colonnes, nous aurons les valeurs de la variable `breaks`.
+Supposons qu'on désire obtenir une table de contingence avec les modalités de la variable `REG` en colonnes (les codes régions) et celles de la variable `TYPEQU` en lignes (le type d'équipement). Au croisement lignes/colonnes, nous aurons les valeurs de la variable `NB_EQUIP`. Autrement dit, il s'agit de décomposer dans chaque région le nombre d'équipements en fonction du type. La première approche consiste à laisser l'argument par défaut pour `fun.aggregate`:
 
 ```{r, eval = TRUE}
-data.table::dcast(data = bpe2018_DT,
+head(
+  data.table::dcast(data = bpe_ens_2018,
 									formula = TYPEQU ~ REG,
 									value.var = "NB_EQUIP")
+)
 ```
 
 Ici, la fonction `dcast` sans le paramètre `fun.aggregate` renvoie le nombre d'observations par croisement, comme le ferait l'instruction suivante :
 
 ```{r, eval=TRUE}
-# table(warpDT$tension, warpDT$wool)
-head(table(bpe2018_DT$TYPEQU, bpe2018_DT$REG))
+head(
+  table(bpe_ens_2018$TYPEQU, bpe_ens_2018$REG)
+  )
 ```
 
-Ce comportement est dû au fait qu'**il n'y a pas qu'une seule valeur possible par croisement** lignes/colonnes. 
+Ce comportement est dû au fait qu'**il n'y a pas qu'une seule valeur possible par croisement** lignes/colonnes. Lorsque une variable de poids existe (par exemple le nombre d'équipements concernés), cette approche fournit un tableau de contingence incorrect. 
 
-En revanche, si nous ajoutons le paramètre `fun.aggregate`, le résultat est totalement différent. Nous souhaitons par exemple calculer la somme des valeurs pour chaque "cellule" de la table.
+En revanche, si nous ajoutons le paramètre `fun.aggregate`, le résultat est différent. Pour obtenir le tableau de contingence, c'es-o-dire la somme croisée des valeurs pour chaque "cellule" de la table, il convient d'ajouter l'argument de la manière suivante:
 
 ```{r, eval=TRUE}
-data.table::dcast(data = bpe2018_DT,
+head(
+  data.table::dcast(data = bpe_ens_2018,
 									formula = TYPEQU ~ REG,
 									value.var = "NB_EQUIP",
 									fun.aggregate = sum)
+)
 ```
 
 ::: {.conseil data-latex=""}
-Si l'on souhaite simplement concaténer les données dans une table, sans leur appliquer de traitement, il faut utiliser la fonction `toString`.
+Si l'on souhaite simplement concaténer les données dans une table, sans leur appliquer de traitement, il faut utiliser la fonction `toString`. 
+<!----- Exemple pas top je trouve: je suis d'avis de le supprimer (pas très tidy)
+Par exemple, supposons qu'on désire lister pour chaque IRIS (variable `DCIRIS`), le type d'équipement (variable `TYPEQU`) pour lequel plus 100 équipements sont disponibles :
 
 ```{r, eval=FALSE}
-data.table::dcast(data = bpe2018_DT,
-									formula = TYPEQU ~ REG,
+data.table::dcast(data = bpe_ens_2018[NB_EQUIP>100],
+									formula = DCIRIS ~ TYPEQU,
 									value.var = "NB_EQUIP",
 									fun.aggregate = toString)
 ```
+---->
 :::
 
 Il est également possible de calculer plusieurs indicateurs en même temps. Il faut alors préciser les fonctions dans une liste :
 
-```{r, eval=TRUE}
-data.table::dcast(data = bpe2018_DT,
+```{r, eval=FALSE}
+head(
+  data.table::dcast(data = bpe_ens_2018,
 									formula = TYPEQU ~ REG,
 									value.var = "NB_EQUIP",
 									fun.aggregate = list(mean, sum))
+)
 ```
 
 <!--
@@ -119,7 +135,7 @@ data.table::dcast(data = warpDT,
 
 ### Large vers long (*melting*)
 
-La "transposition" des données en format long se réalise grâce à la fonction `melt`.
+La *"transposition"* des données en format long se réalise grâce à la fonction `melt`.
 
 Les paramètres attendus sont :
 
@@ -129,7 +145,7 @@ Les paramètres attendus sont :
 + `variable.name` : nom de la colonne regroupant les `measure.vars` ;
 + `value.name` : nom de la colonne contenant la valeur pour chaque modalité de `variable.name`.
 
-D'autres paramètres permettent de mieux contrôler le comportement de la fonction. Pour cela, consulter l'aide *via* `help(topic = "melt", package = "data.table"`.
+D'autres paramètres permettent de mieux contrôler le comportement de la fonction. Pour cela, consulter l'aide *via* `help(topic = "melt", package = "data.table)"`.
 
 <!--
 Pour illustrer cette fonction, nous utiliserons le jeu de données `VADeaths`, qui présente des taux de mortalités par genre et par type de territoire (rural / urbain). Pour les besoins de l'exemple, nous transformons préalablement ces données en objet de classe `data.table`.
@@ -143,7 +159,10 @@ knitr::kable(VADeathsDT)
 Observons le comportement de la fonction si nous passons seulement le 1er paramètre `data`.
 
 ```{r, eval=TRUE}
-data.table::melt(data = VADeathsDT)
+head(
+  data.table::melt(data = VADeathsDT),
+  10
+)
 ```
 
 Nous pouvons constater que `data.table` a tenté de deviné la plupart des paramètres omis. Une façon plus correcte aurait été de préciser la valeur des paramètres, comme ceci :
@@ -156,7 +175,7 @@ data.table::melt(data = VADeathsDT,
 								 value.name = "valeur")
 ```
 
-Il est également possible de restructurer la table à partir d'une expression régulière (#ref vers fiche stringi) sur le nom des colonnes. Nous allons voir comment décomposer la table entre taux de mortalité par type de territoire en colonne (une colonne Rural hommes/femmes et une colonne Urbain hommes/femmes) :
+Il est également possible de restructurer la table à partir d'une expression régulière (#ref vers fiche stringr) sur le nom des colonnes. Nous allons voir comment décomposer la table entre taux de mortalité par type de territoire en colonne (une colonne Rural hommes/femmes et une colonne Urbain hommes/femmes) :
 
 ```{r, eval=FALSE}
 data.table::melt(data = VADeathsDT,
@@ -165,10 +184,10 @@ data.table::melt(data = VADeathsDT,
 ```
 
 ::: {.conseil data-latex=""}
-L'opération de *melting* permet notamment de représenter graphiquement les données (#refGGPLOT2) avec `ggplot2`, qui nécessite ce type de structure de table.
+L'opération de *melting* permet notamment de représenter graphiquement les données (#GGPLOT2) avec `ggplot2`, qui nécessite ce type de structure de table.
 :::
 
-## Pivoter des données avec la `tidyverse`.
+## Pivoter des données avec `tidyverse`.
 
 Nous reprenons ici les exemples précédents.
 
