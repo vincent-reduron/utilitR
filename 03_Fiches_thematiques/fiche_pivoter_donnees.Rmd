@@ -16,7 +16,7 @@ Vous souhaitez restructurer vos tables de données depuis R, les pivoter selon u
 
 Il est communément admis que le "nettoyage" et la préparation des données (*data cleaning*, *data munging*) représente une part importante du travail des professionnels du chiffre. On parle parfois d'un rapport "80/20" : 80% de préparation, 20% d'analyse. Parmi l'ensemble des opérations que ce champ recouvre, la restructuration des données tient une place importante. Les deux principales opérations de restructuration consistent à basculer d'un format dit **long** à un format **large**, ou inversement. On dit alors que l'on **pivote** les données, comme avec les tableaux croisés dynamiques d'`Excel ®`.
 
-On trouve également dans la littérature les termes de *data.wrangling*, *reshaping*, *melt* (faire fondre), *cast* (jeter, lancer), *tidy / molten data*
+On trouve également dans la littérature les termes de *data.wrangling*, *reshaping*, *melt* (faire fondre), *cast* (jeter, lancer), *tidy / molten data*.
 
 -->
 
