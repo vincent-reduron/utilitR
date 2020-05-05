@@ -40,7 +40,7 @@ data("bpe_ens_2018")
 ```
 
 
-## Pivoter des données avec `tidyverse`
+## Restructurer des données avec `tidyverse`
 
 Nous reprenons ici les exemples précédents.
 
@@ -49,7 +49,7 @@ library(tidyr)
 library(dplyr)
 ```
 
-### Pivoter des données vers des colonnes (*long to wide*)
+### Pivoter des données vers un format large (*long to wide*)
 
 Somme des équipements par régions et type d'équipement
 
@@ -70,7 +70,7 @@ bpe_ens_2018 %>%
 	pivot_wider(names_from = REG, values_from = c(somme_EQUIP, moyenne_EQUIP))
 ```
 
-### Pivoter des données vers des lignes (*wide to long*)
+### Pivoter des données vers un format long (*wide to long*)
 
 #### Exemple simple
 
@@ -95,9 +95,9 @@ VADeathTIB %>%
 
 
 
-## Pivoter des données avec `data.table`.
+## Restructurer des données avec `data.table`.
 
-### Passer d'un format long vers large (*casting*)
+### Pivoter des données vers un format large (*long to wide*)
 
 La fonction `dcast` attend plusieurs paramètres :
 
@@ -190,7 +190,7 @@ data.table::dcast(data = warpDT,
 
 -->
 
-### Large vers long (*melting*)
+### Pivoter des données vers un format long (*wide to long*)
 
 La *"transposition"* des données en format long se réalise grâce à la fonction `melt`.
 
@@ -266,9 +266,9 @@ Le langage SQL permet également de réaliser ces opérations, notamment grâce 
 On trouve sur internet beaucoup de ressources au sujet des opérations de restructuration de données :
 
 * la [vignette du *package* `tidyr` sur le pivotage des données](https://cran.r-project.org/web/packages/tidyr/vignettes/pivot.html)
-* l'[équivalent pour le *package* `data.table`](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-reshape.html)
-* la [traduction française de la cheatsheet sur `dplyr/tidyr`](https://github.com/rstudio/cheatsheets/raw/master/translations/french/data-wrangling-french.pdf)
-* l'[article d'Hadley Wickham du *Journal of Statistical Sofware* (JSS) sur les données *tidy*](https://www.jstatsoft.org/article/view/v059i10)
-* Stack Overflow
+* la [traduction française de la cheatsheet sur `dplyr/tidyr`](https://github.com/rstudio/cheatsheets/raw/master/translations/french/data-wrangling-french.pdf);
+* l'[article d'Hadley Wickham du *Journal of Statistical Sofware* (JSS) sur les données *tidy*](https://www.jstatsoft.org/article/view/v059i10);
+* l'[équivalent pour le *package*; `data.table`](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-reshape.html).
+
 
 
