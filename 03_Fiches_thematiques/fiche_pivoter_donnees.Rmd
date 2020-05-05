@@ -77,7 +77,7 @@ bpe_ens_2018 %>%
 ```{r, eval=TRUE}
 VADeathTIB <- as_tibble(VADeaths, rownames = "rn")
 
-VADeathTIB %>% mutate(rn = n()) %>%
+VADeathTIB %>%
 	pivot_longer(-rn, names_to = "indicateur", values_to = "valeur")
 
 ```
