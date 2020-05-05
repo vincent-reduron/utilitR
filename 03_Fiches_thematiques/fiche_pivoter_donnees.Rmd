@@ -1,4 +1,4 @@
-# Pivoter des données en R
+# Réorganiser des tables de données
 
 ## Tâches concernées et recommandations
 
@@ -26,6 +26,7 @@ Cette fiche utilise les données de la BPE, disponibles dans le package `doremif
 library(doremifasol)
 data("bpe_ens_2018")
 ```
+
 
 
 Le principe du pivot peut être illustré par les deux transformations suivantes:
