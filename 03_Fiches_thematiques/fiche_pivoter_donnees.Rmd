@@ -37,6 +37,61 @@ Le principe du pivot peut être illustré par les deux transformations suivantes
 ![Transformation *wide to long*](./pics/datatable/widetolong.png)
 
 
+## Pivoter des données avec `tidyverse`
+
+Nous reprenons ici les exemples précédents.
+
+```{r, echo = TRUE}
+library(tidyr)
+library(dplyr)
+```
+
+### Long vers large
+
+Somme des équipements par régions et type d'équipement
+
+```{r, eval=TRUE}
+bpe_ens_2018 %>%
+	group_by(REG, TYPEQU) %>%
+	summarise(somme_EQUIP = sum(NB_EQUIP)) %>%
+	pivot_wider(names_from = REG, values_from = somme_EQUIP)
+
+```
+
+Somme et moyenne des équipements par régions et type d'équipement
+
+```{r, eval=TRUE}
+bpe_ens_2018 %>%
+	group_by(REG, TYPEQU) %>%
+	summarise(somme_EQUIP = sum(NB_EQUIP), moyenne_EQUIP = mean(NB_EQUIP)) %>%
+	pivot_wider(names_from = REG, values_from = c(somme_EQUIP, moyenne_EQUIP))
+```
+
+### Large vers long
+
+#### Exemple simple
+
+```{r, eval=TRUE}
+VADeathTIB <- as_tibble(VADeathsDT)
+
+VADeathTIB %>%
+	pivot_longer(-rn, names_to = "indicateur", values_to = "valeur")
+
+```
+
+#### Exemple plus avancé
+
+```{r, eval=TRUE}
+VADeathTIB %>%
+	pivot_longer(-rn,
+							 names_to = "indicateur",
+							 values_to = "valeur") %>%
+	separate(indicateur,  c("origine", "genre")) %>%
+	pivot_wider(names_from = origine, values_from = valeur)
+```
+
+
+
 ## Pivoter des données avec `data.table`.
 
 ### Passer d'un format long vers large (*casting*)
@@ -185,59 +240,6 @@ data.table::melt(data = VADeathsDT,
 ::: {.conseil data-latex=""}
 L'opération de *melting* permet notamment de représenter graphiquement les données (#GGPLOT2) avec `ggplot2`, qui nécessite ce type de structure de table.
 :::
-
-## Pivoter des données avec `tidyverse`.
-
-Nous reprenons ici les exemples précédents.
-
-```{r, echo = TRUE}
-library(tidyr)
-library(dplyr)
-```
-
-### Long vers large
-
-Somme des équipements par régions et type d'équipement
-
-```{r, eval=TRUE}
-bpe_ens_2018 %>%
-	group_by(REG, TYPEQU) %>%
-	summarise(somme_EQUIP = sum(NB_EQUIP)) %>%
-	pivot_wider(names_from = REG, values_from = somme_EQUIP)
-
-```
-
-Somme et moyenne des équipements par régions et type d'équipement
-
-```{r, eval=TRUE}
-bpe_ens_2018 %>%
-	group_by(REG, TYPEQU) %>%
-	summarise(somme_EQUIP = sum(NB_EQUIP), moyenne_EQUIP = mean(NB_EQUIP)) %>%
-	pivot_wider(names_from = REG, values_from = c(somme_EQUIP, moyenne_EQUIP))
-```
-
-### Large vers long
-
-#### Exemple simple
-
-```{r, eval=TRUE}
-VADeathTIB <- as_tibble(VADeathsDT)
-
-VADeathTIB %>%
-	pivot_longer(-rn, names_to = "indicateur", values_to = "valeur")
-
-```
-
-#### Exemple plus avancé
-
-```{r, eval=TRUE}
-VADeathTIB %>%
-	pivot_longer(-rn,
-							 names_to = "indicateur",
-							 values_to = "valeur") %>%
-	separate(indicateur,  c("origine", "genre")) %>%
-	pivot_wider(names_from = origine, values_from = valeur)
-```
 
 
 ## A savoir
