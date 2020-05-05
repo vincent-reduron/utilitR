@@ -49,7 +49,7 @@ library(tidyr)
 library(dplyr)
 ```
 
-### Long vers large
+### Pivoter des données vers des colonnes (*long to wide*)
 
 Somme des équipements par régions et type d'équipement
 
@@ -70,7 +70,7 @@ bpe_ens_2018 %>%
 	pivot_wider(names_from = REG, values_from = c(somme_EQUIP, moyenne_EQUIP))
 ```
 
-### Large vers long
+### Pivoter des données vers des lignes (*wide to long*)
 
 #### Exemple simple
 
