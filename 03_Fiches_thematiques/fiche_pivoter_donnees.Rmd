@@ -1,13 +1,13 @@
-# Réorganiser des tables de données
+# Restructurer des tables de données
 
 ## Tâches concernées et recommandations
 
-Vous souhaitez restructurer vos tables de données depuis R, les pivoter selon une ou plusieurs variables.
+Vous souhaitez restructurer vos tables de données depuis R en les pivotant selon une ou plusieurs variables (*long to wide* ou *wide to long*).
 
 ::: {.recommandation data-latex=""}
 
 * Pour des tables de données de taille petite et moyenne (inférieure à 1 Go ou moins d'un million d'observations), **il est recommandé d'utiliser les _packages_ `tidyr` et `dplyr`** qui sont présentés en détail dans LA FICHE REFERENCE A COMPLETER;
-* Pour des tables de données de grande taille (plus de 1 Go ou plus d'un million d'observations), **Il est également recommandé d'utiliser le *package* `data.table`** qui est présenté en détail dans la fiche [Manipuler des données avec `data.table`].
+* Pour des tables de données de grande taille (plus de 1 Go ou plus d'un million d'observations), **il est recommandé d'utiliser le *package* `data.table`** qui est présenté en détail dans la fiche [Manipuler des données avec `data.table`].
 :::
 
 <!--commGF : pas sûr que ce soit utile
@@ -20,22 +20,24 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 
 -->
 
-Cette fiche utilise les données de la BPE, disponibles dans le package `doremifasol`:
+## Principe de la restructuration des données
 
-```{r, eval=TRUE}
-library(doremifasol)
-data("bpe_ens_2018")
-```
-
-
-
-Le principe du pivot peut être illustré par les deux transformations suivantes:
+Une table de données stocke des informations sous forme de lignes et de colonnes.
+Au cours d'un traitement statistique, il est souvent nécessaire de restructurer les données, en transformant en colonnes certaines informations qui figuraient en ligne (ou inversement). Les deux principales opérations de restructuration des données peuvent être illustrées par les deux transformations suivantes:
 
 ![Transformation *long to wide*](./pics/datatable/longtowide.png)
 
 * Transformation *wide to long*: 
 
 ![Transformation *wide to long*](./pics/datatable/widetolong.png)
+
+
+Cette fiche illustre les différentes méthodes de réorganisation des données avec les données de la Base Permanente des Equipements, disponibles dans le package `doremifasol`:
+
+```{r, eval=TRUE}
+library(doremifasol)
+data("bpe_ens_2018")
+```
 
 
 ## Pivoter des données avec `tidyverse`
