@@ -75,9 +75,9 @@ bpe_ens_2018 %>%
 #### Exemple simple
 
 ```{r, eval=TRUE}
-VADeathTIB <- as_tibble(VADeathsDT)
+VADeathTIB <- as_tibble(VADeaths, rownames = "rn")
 
-VADeathTIB %>%
+VADeathTIB %>% mutate(rn = n()) %>%
 	pivot_longer(-rn, names_to = "indicateur", values_to = "valeur")
 
 ```
