@@ -25,9 +25,11 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 Une table de données stocke des informations sous forme de lignes et de colonnes.
 Au cours d'un traitement statistique, il est souvent nécessaire de restructurer les données, en transformant en colonnes certaines informations qui figuraient en ligne (ou inversement). Les deux principales opérations de restructuration des données peuvent être illustrées par les deux transformations suivantes:
 
+- **Transformation *long to wide* **
+
 ![Transformation *long to wide*](./pics/datatable/longtowide.png)
 
-* Transformation *wide to long*: 
+- ** Transformation *wide to long** 
 
 ![Transformation *wide to long*](./pics/datatable/widetolong.png)
 
@@ -40,14 +42,20 @@ data("bpe_ens_2018")
 ```
 
 
-## Restructurer des données avec `tidyverse`
+## Restructurer des données avec le `tidyverse`
 
-Nous reprenons ici les exemples précédents.
+Cette section illustre les fonctions de restructuration de données avec le `tidyverse`.
 
 ```{r, echo = TRUE}
-library(tidyr)
-library(dplyr)
+library(tidyverse)
 ```
+
+On commence par transformer la table `bpe_ens_2018` en `tibble`.
+
+```{r, echo = TRUE}
+bpe_ens_2018_tbl <- as_tibble(bpe_ens_2018)
+```
+
 
 ### Pivoter des données vers un format large (*long to wide*)
 
