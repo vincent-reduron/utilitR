@@ -111,9 +111,7 @@ bpe_ens_2018_tbl %>%
 
 
 ::: {.conseil data-latex=""}
-
-Il est tentant de restructurer les données sous format *wide* car ce format peut paraître plus intuitif. Toutefois, il est généralement plus simple et plus rigoureux de traiter les données en format *long*. En effet, l'utilisation de `pivot_wider()` aboutit fréquemment à des tables mal ordonnées, dont les noms de colonnes contiennent des informations importantes. Il est donc conseillé de bien réfléchir avant de restructurer en format *wide*, et de ne le faire que lorsque cela paraît indispensable.
-
+Il est tentant de restructurer les données sous format *wide* car ce format peut paraître plus intuitif. Toutefois, il est généralement plus simple et plus rigoureux de traiter les données en format *long*. En effet, la restructuration de données sous format *wide* aboutit fréquemment à des tables mal ordonnées, dont les noms de colonnes contiennent des informations importantes. Il est donc conseillé de bien réfléchir avant de restructurer en format *wide*, et de ne le faire que lorsque cela paraît indispensable.
 :::
 
 
