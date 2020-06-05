@@ -22,8 +22,7 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 
 ## Principe de la restructuration des données
 
-Une table de données stocke des informations sous forme de lignes et de colonnes.
-Au cours d'un traitement statistique, il est souvent nécessaire de restructurer les données, en transformant en colonnes certaines informations qui figuraient en ligne (ou inversement). Les deux principales opérations de restructuration des données peuvent être illustrées par les deux transformations suivantes:
+Une table de données stocke des informations sous forme de lignes et de colonnes. Au cours d'un traitement statistique, il est souvent nécessaire de restructurer les données, en transformant en colonnes certaines informations qui figuraient en ligne (ou inversement). Les deux principales opérations de restructuration des données peuvent être illustrées par les deux transformations suivantes:
 
 - **Transformation *long to wide* **
 
@@ -51,7 +50,7 @@ Cette section illustre les fonctions de restructuration de données avec le `tid
 library(tidyverse)
 ```
 
-On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Afin d'alléger la présentation, on conserve uniquement les variables sur le taux de pauvreté dans la table `filosofi_epci_2016`, et uniquement les données sur les boulangeries et les boucheries-charcuteries ("B203" et "B204") dans la table `bpe_ens_2018`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
+On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Afin d'alléger la présentation, on conserve uniquement les variables sur le taux de pauvreté dans la table `filosofi_epci_2016`, et uniquement les données sur les boulangeries, les boucheries-charcuteries et les pharmacies ("B203", "B204" et "D301") dans la table `bpe_ens_2018`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
 
 ```{r, echo = TRUE}
 # Convertir la table bpe_ens_2018 en tibble et sélectionner des observations
@@ -103,11 +102,11 @@ Voici un exemple de l'usage de cette fonction avec les données de la base perma
 bpe_ens_2018_tbl
 ```
 
-On restructure cette table avec la fonction `pivot_wider` pour obtenir une nouvelle table avec l'iris ou la commune en ligne, et le nombre de boulangeries et le nombre de boucheries-charcuteries en colonnes: les lignes de la nouvelle table sont identifiées par l'identifiant d'iris (`id_cols = c(DCIRIS)`), on transpose les valeurs contenues dans la colonne `NB_EQUIP` (`values_from = NB_EQUIP`), le nom des nouvelles colonnes transposées est indiqué dans la colonne `TYPEQU` (`names_from = TYPEQU`), et on choisit `NB_EQUIP_` comme préfixe pour le nom des nouvelles colonnes (`names_prefix = "NB_EQUIP_"`). On constate qu'il y a des valeurs manquantes dans la table de sortie car il arrive que certaines communes (ou certains iris) ne comptent aucun équipement de certains types.
+On restructure cette table avec la fonction `pivot_wider` pour obtenir une nouvelle table avec l'iris ou la commune en ligne, et le nombre de boulangeries et le nombre de boucheries-charcuteries en colonnes: les lignes de la nouvelle table sont identifiées par l'identifiant d'iris (`id_cols = DCIRIS`), on transpose les valeurs contenues dans la colonne `NB_EQUIP` (`values_from = NB_EQUIP`), le nom des nouvelles colonnes transposées est indiqué dans la colonne `TYPEQU` (`names_from = TYPEQU`), et on choisit `NB_EQUIP_` comme préfixe pour le nom des nouvelles colonnes (`names_prefix = "NB_EQUIP_"`). On constate qu'il y a des valeurs manquantes dans la table de sortie car il arrive que certaines communes (ou certains iris) ne comptent aucun équipement de certains types.
 
 ```{r, eval=TRUE}
 bpe_ens_2018_tbl %>%
-	pivot_wider(id_cols = c(DCIRIS),  names_from = TYPEQU, values_from = NB_EQUIP, names_prefix = "NB_EQUIP_")
+	pivot_wider(id_cols = DCIRIS,  names_from = TYPEQU, values_from = NB_EQUIP, names_prefix = "NB_EQUIP_")
 ```
 
 
@@ -124,9 +123,9 @@ Il est tentant de restructurer les données sous format *wide* car ce format peu
 
 La fonction `dcast` attend plusieurs paramètres :
 
-+ `data` : désigne la table que l'on souhaite pivoter
-+ `formula` : une formule de type `ligne ~ colonne`
-+ `value.var` : la variable qui servira à alimenter le croisement ligne/colonne
++ `data` : désigne la table que l'on souhaite pivoter;
++ `formula` : une formule de type `ligne ~ colonne`;
++ `value.var` : la variable qui servira à alimenter le croisement ligne/colonne;
 + `fun.aggregate` : (FACULTATIF) la fonction d'agrégation à appliquer sur la `value.var`. Si les variables de `formula` n'identifient pas une valeur unique, la fonction `length` est utilisée par défaut.
 
 Un exemple vaut mieux qu'un long discours :
