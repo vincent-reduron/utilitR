@@ -38,8 +38,8 @@ Cette fiche illustre les différentes méthodes de réorganisation des données 
 
 ```{r, eval=TRUE}
 library(doremifasol)
-bpe_ens_2018 <- data("bpe_ens_2018")
-filosofi_epci_2016 <- data("filosofi_epci_2016")[, ]
+bpe_ens_2018 <- bpe_ens_2018
+filosofi_epci_2016 <- filosofi_epci_2016
 ```
 
 
@@ -51,11 +51,17 @@ Cette section illustre les fonctions de restructuration de données avec le `tid
 library(tidyverse)
 ```
 
-On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
+On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Afin d'alléger la présentation, on conserve uniquement les variables sur le taux de pauvreté dans la table `filosofi_epci_2016`, et uniquement les données sur les boulangeries et les boucheries-charcuteries ("B203" et "B204") dans la table `bpe_ens_2018`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
 
 ```{r, echo = TRUE}
-bpe_ens_2018_tbl <- as_tibble(bpe_ens_2018)
-filosofi_epci_2016_tbl <- as_tibble(filosofi_epci_2016)
+# Convertir la table bpe_ens_2018 en tibble et sélectionner des observations
+bpe_ens_2018_tbl <- as_tibble(bpe_ens_2018) %>% 
+  filter(TYPEQU == "B203" | TYPEQU == "B204" | TYPEQU == "D301")
+
+# Convertir la table filosofi_epci_2016 en tibble et sélectionner des variables
+filosofi_epci_2016_tbl <- as_tibble(filosofi_epci_2016) %>% 
+  select(CODGEO, TP6016, TP60AGE116, TP60AGE216,
+         TP60AGE316, TP60AGE416, TP60AGE516, TP60AGE616)
 ```
 
 #### `pivot_longer`: transformer des colonnes en lignes
@@ -70,14 +76,14 @@ La fonction `pivot_longer` permet de restructurer des données en transformant d
 Voici un exemple de l'usage de cette fonction avec les données Filosofi 2016 sur les EPCI. On peut voir que cette table contient deux types d'information: le code de l'EPCI (`CODGEO`), et des colonnes donnant le taux de pauvreté total (`TP6016`) et le taux de pauvreté par tranche d'âge (de `TP60AGE116` à `TP60AGE616`).
 
 ```{r}
-head(filosofi_epci_2016_tbl)
+filosofi_epci_2016_tbl
 ```
 
-Nous allons restructurer cette table pour obtenir une nouvelle table, avec une observation par EPCI et par tranche d'âge. Voici le code qui permet d'obtenir cette table: on transpose les valeurs des colonnes dont le nom commence par "TP" (`cols = starts_with("TP")`), le nom des colonnes transposées sera indiquée dans la nouvelle colonne "tranche_age" (`names_to = "tranche_age"`) et les valeurs des colonnes transposées seront indiquées dans la colonne "taux_pauvrete" (`values_to = "taux_pauvrete"`).
+On restructure cette table avec la fonction `pivot_longer` pour obtenir une nouvelle table, avec une observation par EPCI et par tranche d'âge: on transpose les valeurs des colonnes dont le nom commence par "TP" (`cols = starts_with("TP")`), le nom des colonnes transposées sera indiquée dans la nouvelle colonne "tranche_age" (`names_to = "tranche_age"`) et les valeurs des colonnes transposées seront indiquées dans la colonne "taux_pauvrete" (`values_to = "taux_pauvrete"`).
 
 ```{r}
 donnees_pauvrete_long <- filosofi_epci_2016_tbl %>% pivot_longer(cols = starts_with("TP"), names_to = "tranche_age", values_to = "taux_pauvrete")
-head(donnees_pauvrete_long, 10)
+donnees_pauvrete_long
 ```
 
 #### `pivot_wider`: transformer des lignes en colonnes
@@ -91,11 +97,17 @@ La fonction `pivot_wider` permet de restructurer des données en transformant de
 
 Par ailleurs, il est souvent utile d'utiliser l'option `names_prefix` pour définir le préfixe du nom des nouvelles colonnes.
 
+Voici un exemple de l'usage de cette fonction avec les données de la base permanente des équipements 2018. On peut voir que cette table contient une ligne par iris ou commune et par type d'équipement, ce qui explique qu'elle ait un grand nombre d'observations.
+
+```{r}
+bpe_ens_2018_tbl
+```
+
+On restructure cette table avec la fonction `pivot_wider` pour obtenir une nouvelle table avec l'iris ou la commune en ligne, et le nombre de boulangeries et le nombre de boucheries-charcuteries en colonnes: les lignes de la nouvelle table sont identifiées par l'identifiant d'iris (`id_cols = c(DCIRIS)`), on transpose les valeurs contenues dans la colonne `NB_EQUIP` (`values_from = NB_EQUIP`), le nom des nouvelles colonnes transposées est indiqué dans la colonne `TYPEQU` (`names_from = TYPEQU`), et on choisit `NB_EQUIP_` comme préfixe pour le nom des nouvelles colonnes (`names_prefix = "NB_EQUIP_"`). On constate qu'il y a des valeurs manquantes dans la table de sortie car il arrive que certaines communes (ou certains iris) ne comptent aucun équipement de certains types.
+
 ```{r, eval=TRUE}
-bpe_ens_2018 %>%
-	group_by(REG, TYPEQU) %>%
-	summarise(NB_EQUIP_TOT = sum(NB_EQUIP)) %>%
-	pivot_wider(id_cols =TYPEQU,  names_from = REG, values_from = NB_EQUIP_TOT, names_prefix = "nb_equip_reg")
+bpe_ens_2018_tbl %>%
+	pivot_wider(id_cols = c(DCIRIS),  names_from = TYPEQU, values_from = NB_EQUIP, names_prefix = "NB_EQUIP_")
 ```
 
 
@@ -106,60 +118,7 @@ Il est tentant de restructurer les données sous format *wide* car ce format peu
 :::
 
 
-
-
-
-
-
-
-
-### Pivoter des données vers un format large (*long to wide*)
-
-Somme des équipements par régions et type d'équipement
-
-```{r, eval=TRUE}
-bpe_ens_2018 %>%
-	group_by(REG, TYPEQU) %>%
-	summarise(somme_EQUIP = sum(NB_EQUIP)) %>%
-	pivot_wider(names_from = REG, values_from = somme_EQUIP)
-
-```
-
-Somme et moyenne des équipements par régions et type d'équipement
-
-```{r, eval=TRUE}
-bpe_ens_2018 %>%
-	group_by(REG, TYPEQU) %>%
-	summarise(somme_EQUIP = sum(NB_EQUIP), moyenne_EQUIP = mean(NB_EQUIP)) %>%
-	pivot_wider(names_from = REG, values_from = c(somme_EQUIP, moyenne_EQUIP))
-```
-
-### Pivoter des données vers un format long (*wide to long*)
-
-#### Exemple simple
-
-```{r, eval=TRUE}
-VADeathTIB <- as_tibble(VADeaths, rownames = "rn")
-
-VADeathTIB %>%
-	pivot_longer(-rn, names_to = "indicateur", values_to = "valeur")
-
-```
-
-#### Exemple plus avancé
-
-```{r, eval=TRUE}
-VADeathTIB %>%
-	pivot_longer(-rn,
-							 names_to = "indicateur",
-							 values_to = "valeur") %>%
-	separate(indicateur,  c("origine", "genre")) %>%
-	pivot_wider(names_from = origine, values_from = valeur)
-```
-
-
-
-## Restructurer des données avec `data.table`.
+## Restructurer des données avec `data.table`
 
 ### Pivoter des données vers un format large (*long to wide*)
 
