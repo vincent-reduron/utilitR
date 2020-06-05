@@ -31,3 +31,5 @@ Imports:
 Suggests: 
     haven,
     rprojroot
+Remotes:
+    pierre-lamarche/doremifasol
