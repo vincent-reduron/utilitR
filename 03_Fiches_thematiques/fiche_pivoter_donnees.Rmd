@@ -46,11 +46,11 @@ data("bpe_ens_2018")
 
 Cette section illustre les fonctions de restructuration de données avec le `tidyverse`.
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
 library(tidyverse)
 ```
 
-On commence par transformer la table `bpe_ens_2018` en `tibble`.
+On commence par transformer la table `bpe_ens_2018` en `tibble`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
 
 ```{r, echo = TRUE}
 bpe_ens_2018_tbl <- as_tibble(bpe_ens_2018)
