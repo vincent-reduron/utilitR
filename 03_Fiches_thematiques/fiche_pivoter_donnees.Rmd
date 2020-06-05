@@ -34,11 +34,12 @@ Au cours d'un traitement statistique, il est souvent nécessaire de restructurer
 ![Transformation *wide to long*](./pics/datatable/widetolong.png)
 
 
-Cette fiche illustre les différentes méthodes de réorganisation des données avec les données de la Base Permanente des Equipements, disponibles dans le package `doremifasol`:
+Cette fiche illustre les différentes méthodes de réorganisation des données avec les données de la Base Permanente des Equipements 2018 et les données du répertoire Filosofi 2016 agrégées au niveau communal, disponibles dans le package `doremifasol`:
 
 ```{r, eval=TRUE}
 library(doremifasol)
-data("bpe_ens_2018")
+bpe_ens_2018 <- data("bpe_ens_2018")
+filosofi_epci_2016 <- data("filosofi_epci_2016")[, ]
 ```
 
 
@@ -50,14 +51,12 @@ Cette section illustre les fonctions de restructuration de données avec le `tid
 library(tidyverse)
 ```
 
-On commence par transformer la table `bpe_ens_2018` en `tibble`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
+On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
 
 ```{r, echo = TRUE}
 bpe_ens_2018_tbl <- as_tibble(bpe_ens_2018)
+filosofi_epci_2016_tbl <- as_tibble(filosofi_epci_2016)
 ```
-
-
-
 
 #### `pivot_longer`: transformer des colonnes en lignes
 
