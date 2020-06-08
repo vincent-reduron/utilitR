@@ -22,7 +22,11 @@ On trouve également dans la littérature les termes de *data.wrangling*, *resha
 
 
 ::: {.conseil data-latex=""}
-Il est possible de réaliser les jointures avec chacune des trois approches présentées ici. Il est néanmoins conseillé d'être cohérent avec les outils de manipulation de données que vous utilisez. Si vous manipulez vos données avec `data.table`, il sera préférable d'utiliser la fonction `merge` de ce _package_ qui est optimisée pour les objets `data.table`. Si vous manipulez vos données avec le `tidyverse`, il est recommandé d'utiliser les fonctions du *package* `dplyr`.
+Il est possible de réaliser des pivots avec le `tidyverse` ou `data.table`. Il est néanmoins conseillé d'être cohérent avec les outils de manipulation de données que vous utilisez. Si vous manipulez vos données avec `data.table`, il sera préférable d'utiliser les fonctions du package (`melt` et `dcast`) de ce _package_ qui est optimisée pour les objets `data.table`. Si vous manipulez vos données avec le `tidyverse`, il est recommandé d'utiliser les fonctions du *package* `tidyr` (`pivot_longer` et `pivot_wider`).
+
+Il n'est pas recommandé d'utiliser les fonctions du package `reshape2` (`melt` et `dcast`) qui n'est plus maintenu. Les exemples disponibles sur internet utilisant ce package sont directement transposables en `data.table` car la syntaxe des fonctions de ce package reprend directement celle des fonctions de `reshape2`. 
+
+De même, il n'est pas recommandé d'utiliser les fonctions `spread` et `gather` du package `tidyr` qui ont été remplacées par les fonctions `pivot_longer` et `pivot_wider` présentées dans cette fiche.
 :::
 
 
