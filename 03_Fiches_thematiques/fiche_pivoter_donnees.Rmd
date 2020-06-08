@@ -6,8 +6,9 @@ Vous souhaitez restructurer vos tables de données depuis R en les pivotant selo
 
 ::: {.recommandation data-latex=""}
 
-* Pour des tables de données de taille petite et moyenne (inférieure à 1 Go ou moins d'un million d'observations), **il est recommandé d'utiliser les _packages_ `tidyr` et `dplyr`** qui sont présentés en détail dans LA FICHE REFERENCE A COMPLETER;
-* Pour des tables de données de grande taille (plus de 1 Go ou plus d'un million d'observations), **il est recommandé d'utiliser le *package* `data.table`** qui est présenté en détail dans la fiche [Manipuler des données avec `data.table`].
+* Il est recommandé d'utiliser les fonctions `pivot_longer` et `pivot_wider` du *package* `tidyr`, ou les fonctions `melt` et `dcast` du *package* `data.table` (en fontion des outils de manipulation de données utilisés);
+* Il est déconseillé d'utiliser le *package* `reshape2` qui n'est plus mis à jour;
+* Il est déconseillé d'utiliser les fonctions `spread` et `gather` du *package* `tidyr` qui ont été remplacées par les fonctions `pivot_longer` et `pivot_wider`.
 :::
 
 <!--commGF : pas sûr que ce soit utile
@@ -19,17 +20,6 @@ Il est communément admis que le "nettoyage" et la préparation des données (*d
 On trouve également dans la littérature les termes de *data.wrangling*, *reshaping*, *melt* (faire fondre), *cast* (jeter, lancer), *tidy / molten data*.
 
 -->
-
-
-::: {.conseil data-latex=""}
-Il est possible de réaliser des pivots avec le `tidyverse` ou `data.table`. Il est néanmoins conseillé d'être cohérent avec les outils de manipulation de données que vous utilisez. Si vous manipulez vos données avec `data.table`, il sera préférable d'utiliser les fonctions du package (`melt` et `dcast`) de ce _package_ qui est optimisée pour les objets `data.table`. Si vous manipulez vos données avec le `tidyverse`, il est recommandé d'utiliser les fonctions du *package* `tidyr` (`pivot_longer` et `pivot_wider`).
-
-Il n'est pas recommandé d'utiliser les fonctions du package `reshape2` (`melt` et `dcast`) qui n'est plus maintenu. Les exemples disponibles sur internet utilisant ce package sont directement transposables en `data.table` car la syntaxe des fonctions de ce package reprend directement celle des fonctions de `reshape2`. 
-
-De même, il n'est pas recommandé d'utiliser les fonctions `spread` et `gather` du package `tidyr` qui ont été remplacées par les fonctions `pivot_longer` et `pivot_wider` présentées dans cette fiche.
-:::
-
-
 
 ## Principe de la restructuration des données
 
@@ -72,6 +62,11 @@ rbind(
 )
 ```
 
+
+::: {.conseil data-latex=""}
+
+Il est possible de réaliser des pivots avec le `tidyverse` et avec `data.table` (avec le même résultat). **Il est néanmoins conseillé d'être cohérent avec les outils de manipulation de données que vous utilisez.** Si vous manipulez vos données avec `data.table`, il sera préférable d'utiliser les fonctions `melt` et `dcast` de ce _package_ qui sont optimisées pour les objets `data.table`. Si vous manipulez vos données avec le `tidyverse`, il est recommandé d'utiliser les fonctions du *package* `tidyr` (`pivot_longer` et `pivot_wider`).
+:::
 
 ## Restructurer des données avec le `tidyverse`
 
