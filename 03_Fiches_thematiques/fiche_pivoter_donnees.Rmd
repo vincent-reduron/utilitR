@@ -44,15 +44,33 @@ Une table de données stocke des informations sous forme de lignes et de colonne
 ![Transformation *wide to long*](./pics/datatable/widetolong.png)
 
 
-Cette fiche illustre les différentes méthodes de réorganisation des données avec les données de la Base Permanente des Equipements 2018 et les données du répertoire Filosofi 2016 agrégées au niveau communal, disponibles dans le package `doremifasol`:
+::: {.conseil data-latex=""}
+Si vous êtes amenés à utiliser `ggplot` dans votre programme**** conversion vers format long
+:::
+
+
+Cette fiche illustre les différentes méthodes de réorganisation des données avec les données communales Filosofi 2015 et 2016 disponibles dans le package `doremifasol`. Nous utiliserons deux types de format
+
+* Données au format *wide*:
 
 ```{r, eval=TRUE}
 library(doremifasol)
-bpe_ens_2018 <- bpe_ens_2018
-filosofi_epci_2016 <- filosofi_epci_2016
+#bpe_ens_2018 <- bpe_ens_2018
+filosofi <- merge(
+  filosofi_com_2015,
+  filosofi_com_2016,
+  by = "CODGEO")
 ```
 
 
+* Données au format *long*
+
+```{r}
+rbind(
+  doremifasol::telechargerDonnees("COG_COMMUNE", date = 2018),
+  doremifasol::telechargerDonnees("COG_COMMUNE", date = 2019)
+)
+```
 
 
 ## Restructurer des données avec le `tidyverse`
