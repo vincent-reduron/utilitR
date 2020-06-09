@@ -39,29 +39,13 @@ Si vous êtes amenés à utiliser `ggplot` dans votre programme**** conversion v
 :::
 
 
-Cette fiche illustre les différentes méthodes de réorganisation des données avec les données communales Filosofi 2015 et 2016 disponibles dans le package `doremifasol`. Nous utiliserons deux types de format
+Cette fiche illustre les différentes méthodes de réorganisation des données à partir de deux tables de données disponibles dans le _package_ `doremifasol`: la base permanente des équipements 2018 (`bpe_ens_2018`), et les données du répertoire Filosofi 2016 agrégées au niveau des EPCI (table `filosofi_epci_2016`), et disponibles dans le _package_ `doremifasol`.
 
-* Données au format *wide*:
-
-```{r, eval=TRUE}
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
 library(doremifasol)
-#bpe_ens_2018 <- bpe_ens_2018
-filosofi <- merge(
-  filosofi_com_2015,
-  filosofi_com_2016,
-  by = "CODGEO")
+bpe_ens_2018 <- bpe_ens_2018
+filosofi_epci_2016 <- filosofi_epci_2016
 ```
-
-
-* Données au format *long*
-
-```{r}
-rbind(
-  doremifasol::telechargerDonnees("COG_COMMUNE", date = 2018),
-  doremifasol::telechargerDonnees("COG_COMMUNE", date = 2019)
-)
-```
-
 
 ::: {.conseil data-latex=""}
 
@@ -70,13 +54,13 @@ Il est possible de réaliser des pivots avec le `tidyverse` et avec `data.table`
 
 ## Restructurer des données avec le `tidyverse`
 
-Cette section illustre les fonctions de restructuration de données avec le `tidyverse`.
+Cette section illustre les fonctions de restructuration de données avec les fonctions `pivot_longer` et `pivot_wider` du *package* `tidyr`. On commence par charger le _package_ `tidyr`.
 
 ```{r, echo = TRUE, message = FALSE, warning = FALSE}
-library(tidyverse)
+library(tidyr)
 ```
 
-On commence par transformer les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Afin d'alléger la présentation, on conserve uniquement les variables sur le taux de pauvreté dans la table `filosofi_epci_2016`, et uniquement les données sur les boulangeries, les boucheries-charcuteries et les pharmacies ("B203", "B204" et "D301") dans la table `bpe_ens_2018`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble`.
+On transforme les tables `bpe_ens_2018` et `filosofi_epci_2016` en `tibble`. Afin d'alléger la présentation, on conserve uniquement les variables sur le taux de pauvreté dans la table `filosofi_epci_2016`, et uniquement les données sur les boulangeries, les boucheries-charcuteries et les pharmacies ("B203", "B204" et "D301") dans la table `bpe_ens_2018`. Vous pouvez consulter la fiche [Manipuler des données avec le `tidyverse`] pour en apprendre davantage sur les objets `tibble` et sur la sélection de variables avec `select`.
 
 ```{r, echo = TRUE}
 # Convertir la table bpe_ens_2018 en tibble et sélectionner des observations
@@ -135,11 +119,9 @@ bpe_ens_2018_tbl %>%
 	pivot_wider(id_cols = DCIRIS,  names_from = TYPEQU, values_from = NB_EQUIP, names_prefix = "NB_EQUIP_")
 ```
 
-
 ::: {.conseil data-latex=""}
 Il est tentant de restructurer les données sous format *wide* car ce format peut paraître plus intuitif. Toutefois, il est généralement plus simple et plus rigoureux de traiter les données en format *long*. En effet, la restructuration de données sous format *wide* aboutit fréquemment à des tables mal ordonnées, dont les noms de colonnes contiennent des informations importantes. Il est donc conseillé de bien réfléchir avant de restructurer en format *wide*, et de ne le faire que lorsque cela paraît indispensable.
 :::
-
 
 ## Restructurer des données avec `data.table`
 
