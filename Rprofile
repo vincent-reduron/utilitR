@@ -1,8 +1,8 @@
 setHook("rstudio.sessionInit", function(newSession) {
   if (newSession && identical(getwd(), path.expand("~")))
   {
-    message("Ouverture du projet documentationR")
-    rstudioapi::openProject('~/documentationR')
+    message("Ouverture du projet utilitR")
+    rstudioapi::openProject('~/utilitR')
   }
 }, action = "append")
 
