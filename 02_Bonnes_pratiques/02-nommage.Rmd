@@ -39,7 +39,7 @@ On pourra sauvegarder des objets intermédiaires au cours du script. Pour s'assu
 <span style="color:DarkBlue">**Bonnes pratiques**</span> :
 
 * Ne pas utiliser de symboles spéciaux dans le nom du fichier (`-.,;:\/$`^`, caractères accentués, etc.) ;
-* Privilégier les *underscore* (par exemple `donnees_menages`) au CamelCase (consiste à donner un nom en mettant une majuscule à chaque début de mot : par exemple `donneesMenages`). Si vous préférez le CamelCase, utilisez-le systématiquement dans tout le script pour uniformiser le code.
+* Privilégier le snake_case (consiste à donner un nom en séparant les mots par des *underscore* : par exemple `donnees_menages`) au CamelCase (consiste à donner un nom en mettant une majuscule à chaque début de mot : par exemple `donneesMenages`). Si vous préférez le CamelCase, utilisez-le systématiquement dans tout le script pour uniformiser le code.
 
 ## Noms des variables
 
